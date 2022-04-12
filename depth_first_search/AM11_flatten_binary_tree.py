@@ -4,26 +4,61 @@ class Node:
         self.left = left
         self.right = right
 
+def flatten_tree1(tree):
+
+    def dfs(node):
+        if not node:
+            return None
+
+        left_tail = dfs(node.left)
+        right_tail = dfs(node.right)
+
+        if node.left:
+            left_tail.right = node.right
+            node.right = node.left
+            node.left = None
+
+        return right_tail or left_tail or node
+
+    dfs(tree)
+
+    return tree
+
 def flatten_tree(tree):
     if not tree:
         return None
 
+    head = None
+    tail = None
+    cur = tree
+    stack = []
+
+    while stack or cur:
+
+        while cur:
+            stack.append(cur)
+
+            if not head:
+                head = Node(cur.val)
+                tail = head
+            else:
+                tail = Node(cur.val)
+
+            tail = tail.right
 
 
-    def dfs(node, flatten_tree):
-        if not node:return flatten_tree
+            cur = cur.left
 
-        if not flatten_tree:
-            flatten_tree = Node(node.val)
 
-        else:
-            flatten_tree.right = Node(node.val)
-            flatten_tree = flatten_tree.right
+        cur = stack.pop().right
 
-        flatten_tree = dfs(node.left, flatten_tree)
-        flatten_tree = dfs(node.right, flatten_tree)
+    return head
 
-        return flatten_tree
+
+
+
+
+
 
     return dfs(tree, None)
 
